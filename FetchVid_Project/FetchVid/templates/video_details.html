@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Download - {{ video.title }}{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<div class="main-section container mb-4 mt-2">
+    <h1>{{ video.title }}</h1>
+    <p>Video URL: <a href="{{ video.url }}">{{ video.url }}</a></p>
+    <p>Channel Name: {{ video.channel_title }}</p>
+    <p>Duration: {{ video.duration }}</p>
+    <img src="{{ video.thumbnail_url }}" alt="Thumbnail" class="img-thumbnail">
+
+    <div class="toast" id="downloadToast" style="position: fixed; background-color: #333; color: #fff; display: none;">
+        <div class="toast-header" style="background-color: #555; color: #fff;">
+            <strong class="me-auto">Information</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="color: #fff;"></button>
+        </div>
+        <div class="toast-body">
+            Your download is in progress. Please wait while we prepare your video. It will be available shortly. Thank you for choosing us!
+        </div>
+    </div>
+    
+    <script>
+        function showDownloadAlert() {
+            var toast = document.getElementById('downloadToast');
+            toast.style.display = 'block';
+    
+            // Calculate the toast position based on screen dimensions
+            var screenX = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            var screenY = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            var toastWidth = toast.offsetWidth;
+            var toastHeight = toast.offsetHeight;
+    
+            var left = (screenX - toastWidth) / 2;
+            var top = (screenY - toastHeight) / 2;
+    
+            toast.style.left = left + 'px';
+            toast.style.top = top + 'px';
+    
+            setTimeout(function () {
+                toast.style.display = 'none';
+            }, 6000); // Close the toast after 5 seconds
+        }
+    </script>
+    
+
+    <h2 class="mt-3">Download Video with Highest Available Audio Quality:</h2>
+    <form method="post" action="{% url 'FetchVid:video_detail' video_id=video.video_id %}"
+        onsubmit="showDownloadAlert()">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered mt-3 mx-auto">
+                <tr>
+                    <th>Video Quality</th>
+                    <th>Download Link</th>
+                </tr>
+                {% for video_quality, _ in video_audio_qualities %}
+                <tr>
+                    <td>
+                        {% if video_quality %}
+                        {{ video_quality.format }} ({{ video_quality.fps }} fps)
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if video_quality %}
+                        <button type="submit" name="video_quality" value="{{ video_quality.format }}"
+                            class="btn btn-danger" onclick="showDownloadAlert()">Download Video</button>
+
+                        <input type="hidden" name="audio_quality"
+                            value="{% if video_quality and video_quality.abr %}{{ video_quality.abr }}{% else %}{{ video_audio_qualities.0.1.abr }}{% endif %}">
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </form>
+
+    <h2 class="mt-3">Select Video & Audio Quality and Download:</h2>
+    <form method="post" action="{% url 'FetchVid:video_detail' video_id=video.video_id %}"">
+        {% csrf_token %}
+        <div class=" row">
+        <div class="col-md-6">
+            <label for="video_quality">Select Video Quality:</label>
+            <select name="video_quality" id="video_quality" class="form-select">
+                {% for video_quality, _ in video_audio_qualities %}
+                <option value="{{ video_quality.format }}">{{ video_quality.format }} ({{ video_quality.fps }} fps)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            {% if video_audio_qualities %}
+            <label for="audio_quality">Select Audio Quality:</label>
+            <select name="audio_quality" id="audio_quality" class="form-select">
+                {% for _, audio_quality in video_audio_qualities %}
+                {% if audio_quality %}
+                <option value="{{ audio_quality.abr }}">{{ audio_quality.abr }} </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+</div>
+<button type="submit" class="btn btn-danger mt-3" onclick="showDownloadAlert()">Download</button>
+
+</form>
+
+
+{% if merge_error %}
+<div class="alert alert-danger mt-3">{{ merge_error }}</div>
+{% endif %}
+
+<h2 class="mt-3">Video and Audio Only Download Links:</h2>
+<div class="table-responsive">
+    <table class="table table-bordered mt-3 mx-auto">
+        <tr>
+            <th>Video Quality</th>
+            <th>Video Link</th>
+            <th>Audio Quality</th>
+            <th>Audio Link</th>
+        </tr>
+        {% for video_quality, audio_quality in video_audio_qualities %}
+        <tr>
+            <td>
+                {% if video_quality %}
+                {{ video_quality.format }} ({{ video_quality.fps }} fps)
+                {% endif %}
+            </td>
+            <td>
+                {% if video_quality %}
+                <a href="{{ video_quality.url }}" download="{{ video.title }}_{{ video_quality.format }}_video.mp4"
+                    class="btn btn-danger" onclick="showDownloadAlert()">Download Video</a>
+
+                {% endif %}
+            </td>
+            <td>
+                {% if audio_quality %}
+                {{ audio_quality.abr }}
+                {% endif %}
+            </td>
+            <td>
+                {% if audio_quality %}
+                <a href="{{ audio_quality.url }}" download="{{ video.title }}_{{ audio_quality.abr }}_audio.mp3"
+                    class="btn btn-danger" onclick="showDownloadAlert()">Download Audio</a>
+
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+{% endblock %}

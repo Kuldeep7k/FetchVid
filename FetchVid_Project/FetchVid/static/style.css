@@ -1,0 +1,134 @@
+.search-box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 33vh;
+    background-color: #000;
+    color: #fff;
+}
+
+
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center-align the input and button */
+}
+
+input[type="url"] {
+    width: 250%;
+    /* Set the width for laptops and larger screens */
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+button[type="submit"] {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #FF3333;
+}
+
+h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 20px 0;
+}
+
+/* Media query for tablets (786px or smaller) */
+@media (max-width: 786px) {
+    input[type="url"] {
+        width: 150%;
+        /* Adjust the width for tablets */
+    }
+}
+
+/* Media query for phones (600px or smaller) */
+@media (max-width: 600px) {
+    input[type="url"] {
+        width: 100%;
+        /* Adjust the width for phones */
+    }
+}
+
+
+/* Custom CSS for video_details.html */
+.main-section {
+    background-color: #000;
+    padding: 20px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
+.main-section h1 {
+    font-size: 2rem;
+    margin: 20px 0;
+}
+
+/* Media query for tablets (786px or smaller) */
+@media (max-width: 786px) {
+    .main-section h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Media query for phones (600px or smaller) */
+@media (max-width: 600px) {
+    .main-section h1 {
+        font-size: 1.2rem;
+    }
+}
+
+.main-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+.main-section .alert {
+    font-size: 1rem;
+    padding: 10px;
+}
+
+/* Adjust styles for small screens */
+@media (max-width: 786px) {
+    .main-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .main-section select {
+        width: 100%;
+    }
+}
+
+
+#downloadToast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+    color: #fff;
+    width: 300px;
+    text-align: center; /* Center text horizontally */
+    z-index: 1000; /* Set a high z-index to ensure it's on top of other elements */
+}
+
+
+#downloadToast .toast-header, #downloadToast .toast-body {
+    color: #fff; /* White font color for header and body */
+}
+    

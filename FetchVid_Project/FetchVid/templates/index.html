@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}FetchVid - YouTube Video Downloader{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<!-- Search Box -->
+<div class="search-box-container mb-4 p-4" style="min-height: 100vh;">
+    <h2>Enter YouTube Link</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-container">
+            {{ form.youtube_link }}
+        </div>
+        <div class="input-container">
+            <button type="submit">Download -></button>
+        </div>
+    </form>
+</div>
+{% endblock %}
